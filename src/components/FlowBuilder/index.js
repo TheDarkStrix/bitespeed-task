@@ -9,6 +9,7 @@ import {
 } from "reactflow";
 import style from "./flowBuilder.module.scss";
 import { nodeTypes, edgeTypes } from "@/utils/flowBuilderUtils";
+import NodeSidebar from "../NodeSideBar";
 
 function FlowBuilder() {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
@@ -45,7 +46,9 @@ function FlowBuilder() {
             <Controls />
           </ReactFlow>
         </div>
-        <div className={style.rightWrapper}>left</div>
+        <div className={style.rightWrapper}>
+          <NodeSidebar />
+        </div>
       </ReactFlowProvider>
     </div>
   );
