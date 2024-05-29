@@ -7,6 +7,7 @@ import {
   useEdgesState,
   useNodesState,
 } from "reactflow";
+import style from "./flowBuilder.module.scss";
 import { nodeTypes, edgeTypes } from "@/utils/flowBuilderUtils";
 
 function FlowBuilder() {
@@ -21,9 +22,9 @@ function FlowBuilder() {
   const onNodeClick = () => {};
 
   return (
-    <div>
+    <div className={style.container}>
       <ReactFlowProvider>
-        <div>
+        <div className={style.leftWrapper}>
           <ReactFlow
             fitView
             nodes={nodes}
@@ -44,7 +45,7 @@ function FlowBuilder() {
             <Controls />
           </ReactFlow>
         </div>
-        <div>left</div>
+        <div className={style.rightWrapper}>left</div>
       </ReactFlowProvider>
     </div>
   );
