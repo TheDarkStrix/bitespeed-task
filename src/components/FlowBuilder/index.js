@@ -7,6 +7,7 @@ import {
   useEdgesState,
   useNodesState,
   Position,
+  addEdge,
 } from "reactflow";
 import "reactflow/dist/style.css";
 import style from "./flowBuilder.module.scss";
@@ -64,7 +65,35 @@ function FlowBuilder() {
     event.dataTransfer.dropEffect = "move";
   }, []);
 
-  const onConnect = () => {};
+  const onConnect = useCallback(
+    (connectionParams) =>
+      setEdges((existingEdges) => {
+        // Check if a source node is already connected to another node
+        const sourceAlreadyConnected = existingEdges.some(
+          (edge) => edge.source === connectionParams.source
+        );
+        if (sourceAlreadyConnected) {
+          alert("Source node is already connected to another node");
+          return existingEdges;
+        }
+
+        // Check if the target node is already connected to another node
+        const targetAlreadyConnected = existingEdges.some(
+          (edge) => edge.target === connectionParams.target
+        );
+        if (targetAlreadyConnected) {
+          return existingEdges;
+        }
+
+        // If neither source nor target are connected, add the custom edge
+        return addEdge(
+          { ...connectionParams, type: "custom-edge" },
+          existingEdges
+        );
+      }),
+    []
+  );
+
   const onNodeClick = () => {};
 
   return (

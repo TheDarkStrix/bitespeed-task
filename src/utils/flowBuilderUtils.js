@@ -1,3 +1,4 @@
+import CustomEdge from "@/components/FlowBuilder/Edge";
 import Node from "@/components/FlowBuilder/Node";
 
 const nodeTypes = {
@@ -5,7 +6,7 @@ const nodeTypes = {
 };
 
 const edgeTypes = {
-  "custom-edge": "edge",
+  "custom-edge": CustomEdge,
 };
 
 export { nodeTypes, edgeTypes };
