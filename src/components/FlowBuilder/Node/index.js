@@ -23,7 +23,7 @@ function Node({ data }) {
 
       <div className={style.content}>
         {data.value ? (
-          <h1 className={style.data} onClick={() => data.onClick()}>
+          <h1 className={style.data} onClick={() => data?.data?.onClick()}>
             {data.value}
           </h1>
         ) : (

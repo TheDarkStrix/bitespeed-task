@@ -15,6 +15,7 @@ import { nodeTypes, edgeTypes } from "@/utils/flowBuilderUtils";
 import NodeSidebar from "../NodeSideBar";
 import { generateUniqueId } from "@/utils/misc";
 import Header from "../header";
+import toast, { Toaster } from "react-hot-toast";
 
 const defaultZoom = 0.9;
 function FlowBuilder() {
@@ -72,10 +73,10 @@ function FlowBuilder() {
         sourcePosition: Position.Right,
         targetPosition: Position.Left,
         data: {
-          value: `${droppedType} ${newNodeId}`,
+          value: "",
           data: {
             value: `${droppedType} ${newNodeId}`,
-            onClick: () => onNodeClick(null, { id: nid }),
+            onClick: () => onNodeClick(null, { id: newNodeId }),
           },
         },
       };
@@ -101,7 +102,7 @@ function FlowBuilder() {
           (edge) => edge.source === connectionParams.source
         );
         if (sourceAlreadyConnected) {
-          alert("Source node is already connected to another node");
+          toast.error("Source node is already connected to another node");
           return existingEdges;
         }
 
@@ -155,7 +156,7 @@ function FlowBuilder() {
     );
 
     if (nodesWithoutSourceAndTarget.length > 0) {
-      alert("There are nodes without source and target connections.");
+      toast.error("There are nodes without source and target connections.");
     } else {
       saveFlowToLocalStorage();
     }
@@ -171,6 +172,7 @@ function FlowBuilder() {
     if (dummyAnimation) {
       timeout = setTimeout(() => {
         setDummyAnimation(false);
+        toast.success("Data stored to local storage");
       }, 1000);
     }
 
@@ -221,7 +223,16 @@ function FlowBuilder() {
           </div>
         </ReactFlowProvider>
       </div>
-      s
+      <Toaster
+        toastOptions={{
+          success: {
+            duration: 5000,
+          },
+          error: {
+            duration: 5000,
+          },
+        }}
+      />
     </>
   );
 }
