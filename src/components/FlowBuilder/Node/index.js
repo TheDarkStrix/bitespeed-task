@@ -2,6 +2,8 @@ import React from "react";
 import style from "./node.module.scss";
 import { BiMessageSquareDetail } from "react-icons/bi";
 import { IoLogoWhatsapp } from "react-icons/io";
+import CustomHandle from "@/components/FlowBuilder/CustomHandle";
+import { Position } from "reactflow";
 
 function Node({ data }) {
   return (
@@ -28,6 +30,9 @@ function Node({ data }) {
           <p className={style.emptyNode}>Click to edit</p>
         )}
       </div>
+
+      <CustomHandle type="target" position={Position.Left} />
+      <CustomHandle type="source" position={Position.Right} />
     </div>
   );
 }
