@@ -14,6 +14,7 @@ import style from "./flowBuilder.module.scss";
 import { nodeTypes, edgeTypes } from "@/utils/flowBuilderUtils";
 import NodeSidebar from "../NodeSideBar";
 import { generateUniqueId } from "@/utils/misc";
+import Header from "../header";
 
 const defaultZoom = 0.9;
 function FlowBuilder() {
@@ -21,6 +22,7 @@ function FlowBuilder() {
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
   const [selectedNode, setSelectedNode] = useState(null);
+  const [dummyAnimation, setDummyAnimation] = useState(false);
 
   const firstDrop = useRef(true);
 
@@ -141,39 +143,92 @@ function FlowBuilder() {
     );
   };
 
+  const onValidate = () => {
+    const findSourceNodes = new Set();
+    const findTargetNodes = new Set();
+
+    // Collect all source and target nodes
+    edges.forEach((edge) => {
+      findSourceNodes.add(edge.source);
+      findTargetNodes.add(edge.target);
+    });
+
+    // Check for nodes without source and target connections
+    const nodesWithoutSourceAndTarget = nodes.filter(
+      (node) => !findSourceNodes.has(node.id) && !findTargetNodes.has(node.id)
+    );
+
+    console.log(nodesWithoutSourceAndTarget);
+
+    if (nodesWithoutSourceAndTarget.length > 0) {
+      alert("There are nodes without source and target connections.");
+    } else {
+      saveFlowToLocalStorage();
+    }
+  };
+
+  const saveFlowToLocalStorage = () => {
+    localStorage.setItem("flowBuilder", JSON.stringify({ nodes, edges }));
+    setDummyAnimation(true);
+  };
+
+  let timeout;
+  useEffect(() => {
+    if (dummyAnimation) {
+      timeout = setTimeout(() => {
+        setDummyAnimation(false);
+      }, 1000);
+    }
+
+    return () => clearTimeout(timeout);
+  }, [dummyAnimation]);
+
+  useEffect(() => {
+    const flowBuilder = localStorage.getItem("flowBuilder");
+    if (flowBuilder) {
+      const { nodes, edges } = JSON.parse(flowBuilder);
+      setNodes(nodes);
+      setEdges(edges);
+    }
+  }, []);
+
   return (
-    <div className={style.container}>
-      <ReactFlowProvider>
-        <div className={style.leftWrapper}>
-          <ReactFlow
-            fitView
-            nodes={nodes}
-            edges={edges}
-            onInit={setReactFlowInstance}
-            nodeTypes={nodeTypes}
-            edgeTypes={edgeTypes}
-            onDrop={onDrop}
-            onDragOver={onDragOver}
-            onNodesChange={onNodesChange}
-            onEdgesChange={onEdgesChange}
-            onConnect={onConnect}
-            onNodeClick={onNodeClick}
-            onPaneClick={() => setSelectedNode(null)}
-            onEdgeClick={() => setSelectedNode(null)}
-          >
-            <Background />
-            <Controls />
-          </ReactFlow>
-        </div>
-        <div className={style.rightWrapper}>
-          <NodeSidebar
-            selectedNode={selectedNode}
-            cancelSelection={() => setSelectedNode(null)}
-            updateSelectedNode={(value) => updateSelectedNode(value)}
-          />
-        </div>
-      </ReactFlowProvider>
-    </div>
+    <>
+      <Header onClick={onValidate} saveTrigger={dummyAnimation} />
+      <div className={style.container}>
+        <ReactFlowProvider>
+          <div className={style.leftWrapper}>
+            <ReactFlow
+              fitView
+              nodes={nodes}
+              edges={edges}
+              onInit={setReactFlowInstance}
+              nodeTypes={nodeTypes}
+              edgeTypes={edgeTypes}
+              onDrop={onDrop}
+              onDragOver={onDragOver}
+              onNodesChange={onNodesChange}
+              onEdgesChange={onEdgesChange}
+              onConnect={onConnect}
+              onNodeClick={onNodeClick}
+              onPaneClick={() => setSelectedNode(null)}
+              onEdgeClick={() => setSelectedNode(null)}
+            >
+              <Background />
+              <Controls />
+            </ReactFlow>
+          </div>
+          <div className={style.rightWrapper}>
+            <NodeSidebar
+              selectedNode={selectedNode}
+              cancelSelection={() => setSelectedNode(null)}
+              updateSelectedNode={(value) => updateSelectedNode(value)}
+            />
+          </div>
+        </ReactFlowProvider>
+      </div>
+      s
+    </>
   );
 }
 
