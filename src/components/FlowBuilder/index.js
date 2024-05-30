@@ -47,8 +47,6 @@ function FlowBuilder() {
     }
   }, [nodes, reactFlowInstance]);
 
-  console.log("nodes", nodes);
-
   const onDrop = useCallback(
     (event) => {
       event.preventDefault();
@@ -84,8 +82,6 @@ function FlowBuilder() {
 
       // Set the nodes with the new node
       setNodes((currentNodes) => currentNodes.concat(newNode));
-
-      console.log("reactFlowInstance", reactFlowInstance);
 
       // reactFlowInstance.zoomTo(1, {});
     },
@@ -157,8 +153,6 @@ function FlowBuilder() {
     const nodesWithoutSourceAndTarget = nodes.filter(
       (node) => !findSourceNodes.has(node.id) && !findTargetNodes.has(node.id)
     );
-
-    console.log(nodesWithoutSourceAndTarget);
 
     if (nodesWithoutSourceAndTarget.length > 0) {
       alert("There are nodes without source and target connections.");
