@@ -8,6 +8,7 @@ import {
   useNodesState,
   Position,
 } from "reactflow";
+import "reactflow/dist/style.css";
 import style from "./flowBuilder.module.scss";
 import { nodeTypes, edgeTypes } from "@/utils/flowBuilderUtils";
 import NodeSidebar from "../NodeSideBar";
@@ -30,6 +31,8 @@ function FlowBuilder() {
       if (!droppedType) {
         return;
       }
+
+      console.log(event.clientX, event.clientY);
 
       // Get mouse position
       const mousePosition = reactFlowInstance.screenToFlowPosition({

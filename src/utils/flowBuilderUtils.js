@@ -1,5 +1,7 @@
+import Node from "@/components/FlowBuilder/Node";
+
 const nodeTypes = {
-  text: "text",
+  text: Node,
 };
 
 const edgeTypes = {

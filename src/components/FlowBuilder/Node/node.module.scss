@@ -1,0 +1,54 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid lightgrey;
+  background-color: white;
+  border-radius: 0.5rem;
+  width: 50%;
+
+  .head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.4rem 1rem;
+    border-bottom: 1px solid lightgrey;
+    background-color: #b3ede3;
+
+    .left {
+      display: flex;
+      .messageText {
+        margin-left: 1rem;
+      }
+    }
+
+    .right {
+      .whatsapp {
+        color: #24cd63;
+      }
+      .circleContainer {
+        background-color: white;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-shadow: 0 2px 2px -2px gray;
+      }
+    }
+  }
+
+  .content {
+    padding: 0.5rem 1rem;
+
+    .data {
+      font-size: 0.9rem;
+      white-space: pre-line;
+    }
+
+    .emptyNode {
+      text-align: center;
+      color: black;
+    }
+  }
+}
