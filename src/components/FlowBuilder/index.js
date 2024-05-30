@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   Background,
   Controls,
@@ -15,11 +15,35 @@ import { nodeTypes, edgeTypes } from "@/utils/flowBuilderUtils";
 import NodeSidebar from "../NodeSideBar";
 import { generateUniqueId } from "@/utils/misc";
 
+const defaultZoom = 0.9;
 function FlowBuilder() {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
   const [selectedNode, setSelectedNode] = useState(null);
+
+  const firstDrop = useRef(true);
+
+  useEffect(() => {
+    /**
+     * Issue: When the initial textNode is added, the fitView tries to
+     * zoom into the element, to it gets zoomed too much.
+     * Therefore manually setting the zoom when where there is
+     * change in nodes
+     */
+
+    if (firstDrop.current) {
+      firstDrop.current = false;
+      return;
+    }
+
+    if (reactFlowInstance) {
+      const zoomOptions = {
+        duration: 300,
+      };
+      reactFlowInstance.zoomTo(0.9, zoomOptions);
+    }
+  }, [nodes, reactFlowInstance]);
 
   console.log("nodes", nodes);
 
@@ -32,8 +56,6 @@ function FlowBuilder() {
       if (!droppedType) {
         return;
       }
-
-      console.log(event.clientX, event.clientY);
 
       // Get mouse position
       const mousePosition = reactFlowInstance.screenToFlowPosition({
@@ -51,13 +73,21 @@ function FlowBuilder() {
         targetPosition: Position.Left,
         data: {
           value: `${droppedType} ${newNodeId}`,
-          onClick: () => {}, // implement later,
+          data: {
+            value: `${droppedType} ${newNodeId}`,
+            onClick: () => onNodeClick(null, { id: nid }),
+          },
         },
       };
 
+      // Set the nodes with the new node
       setNodes((currentNodes) => currentNodes.concat(newNode));
+
+      console.log("reactFlowInstance", reactFlowInstance);
+
+      // reactFlowInstance.zoomTo(1, {});
     },
-    [reactFlowInstance]
+    [reactFlowInstance, setNodes]
   );
 
   const onDragOver = useCallback((event) => {
@@ -94,7 +124,22 @@ function FlowBuilder() {
     []
   );
 
-  const onNodeClick = () => {};
+  const onNodeClick = (_, node) => setSelectedNode(node);
+
+  const updateSelectedNode = (newValue) => {
+    if (!selectedNode) {
+      return;
+    }
+
+    setNodes((prevNodes) =>
+      prevNodes.map((node) => {
+        if (node.id === selectedNode.id) {
+          node.data.value = newValue;
+        }
+        return node;
+      })
+    );
+  };
 
   return (
     <div className={style.container}>
@@ -121,7 +166,11 @@ function FlowBuilder() {
           </ReactFlow>
         </div>
         <div className={style.rightWrapper}>
-          <NodeSidebar />
+          <NodeSidebar
+            selectedNode={selectedNode}
+            cancelSelection={() => setSelectedNode(null)}
+            updateSelectedNode={(value) => updateSelectedNode(value)}
+          />
         </div>
       </ReactFlowProvider>
     </div>

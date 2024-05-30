@@ -1,0 +1,36 @@
+.header {
+  display: flex;
+  padding: 0.4rem 1rem;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #5d6592;
+  .arrow {
+    cursor: pointer;
+  }
+
+  .text {
+    font-size: 1rem;
+    font-weight: bold;
+  }
+}
+
+.content {
+  padding: 1rem 1rem;
+
+  .heading {
+    font-size: 1rem;
+    margin-bottom: 0.6rem;
+    font-weight: bold;
+  }
+
+  .textarea {
+    width: 100%;
+    border: 2px solid #5d6592;
+    border-radius: 0.5rem;
+    padding: 0.4rem;
+    font-size: 0.8rem;
+    background-color: white;
+    height: 100px;
+    box-sizing: border-box;
+  }
+}
